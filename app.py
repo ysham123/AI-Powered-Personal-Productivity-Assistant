@@ -48,6 +48,8 @@ def handle_post():
         status=data["status"]
     )
 
+    
+
     #adding the new task to the data base
 
     db.session.add(new_task)
@@ -56,6 +58,56 @@ def handle_post():
     #return a success response
 
     return jsonify({"message": "Task added successfully!"}), 201
+
+@app.route("/tasks", methods = ["GET"])
+def retrieve_tasks():
+    #fetch all the tasks from the database
+    tasks = Task.query.all()
+
+    #convert the tasks into dictionaries
+    task_list = []
+    for task in tasks:
+        task_list.append({
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "priority": task.priority,
+            "status": task.status
+        })
+    #return the JSON response
+    return jsonify(task_list)
+
+@app.route("/tasks/<int:id?", methods = ["PUT,"])
+
+def update_task(id):
+    #fetch the id
+    task = Task.query.get(id)
+    if not task:
+        return jsonify({"error": "task doesnt exist"}), 404
+    
+    #get the required data
+    data = request.get_json()
+
+    #update the fields if they exist
+    updatable_fields = ["title", "description", "priority", "status"]
+
+    #update the fields dynamically
+    for field in updatable_fields:
+        if field in data:
+            setattr(task, field, data[field]) #dynamically set the attribute
+    
+    #commit the changes to the database
+    db.session.commit()
+
+    #return the success response with the updated task
+    return jsonify({
+        "id": task.id,
+        "title": task.title,
+        "description": task.description,
+        "priority": task.priority,
+        "status": task.status
+    }), 200
+
 
 # Run the app
 if __name__ == "__main__":
