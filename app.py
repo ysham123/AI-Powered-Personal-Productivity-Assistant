@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 # Initialize Flask app
@@ -31,6 +31,31 @@ def home():
 @app.route("/task_page", methods=["GET"])  # Tasks route placeholder
 def task_page():
     return {"tasks": []}  # Placeholder: Return empty task list
+
+@app.route("/tasks", methods = ["POST"])
+def handle_post():
+    data = request.get_json() #parsing the json from the request
+    
+    #valid the requried fields
+    if not all(key in data for key in ("title", "priority", "status")):
+        return jsonify({"error": "Missing required fields"}), 400 #returning 400 if validation fails
+    
+    #create a new task object
+    new_task = Task(
+        title = data["title"],
+        description=data.get("description", ""), #optional field
+        priority=data["priority"],
+        status=data["status"]
+    )
+
+    #adding the new task to the data base
+
+    db.session.add(new_task)
+    db.session.commit()
+
+    #return a success response
+
+    return jsonify({"message": "Task added successfully!"}), 201
 
 # Run the app
 if __name__ == "__main__":
