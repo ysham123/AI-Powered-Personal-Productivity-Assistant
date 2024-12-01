@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/yosefshammout/Downloads/Lab_6_HashTable_Probing/Lab_6_HashTable_Probing",
+      "program": "/Users/yosefshammout/Downloads/Lab_6_HashTable_Probing/Lab_6_HashTable_Probing/build/Debug/outDebug"
+    }
+  ]
+}
